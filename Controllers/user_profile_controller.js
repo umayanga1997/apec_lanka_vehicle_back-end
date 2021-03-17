@@ -110,9 +110,46 @@ const putUserProfileDetails =async function (req,res, next) {
         });
     }
 }
+const deleteUserProfile =async function (req, res, next) {
+    const userIdForDeletion = req.body.user_id;
+    const userMobileNo = req.body.mobile_no;
+    
+    const response = await pool.query("DELETE FROM users WHERE user_id=$1 AND phone_no=$2", [userIdForDeletion,userMobileNo]);
+    try {
+        if (res.status(200)) {
+            if (response.rowCount != 0 && response.rowCount != null) {
+                res.json({
+                    done: true,
+                    message: "Account hab been deleted.",
+                    data: [],
+                })
+               
+            } else {
+                res.json({
+                    done: false,
+                    message: "Data not found to delete.",
+                    data: [],
+                })
+            }
+        } else {
+            res.json({
+                done: false,
+                message: "Has some issue(s) with status, Try again.",
+                data: [],
+            })
+        }
+    } catch (error) {
+        res.json({
+            done: false,
+            message: "Has some issue(s) with another, Try again.",
+            data: [],
+        });
+    }
+}
 
 module.exports={
     getUserProfileDetails,
     getUsersProfileDetails,
-    putUserProfileDetails
+    putUserProfileDetails,
+    deleteUserProfile,
 }

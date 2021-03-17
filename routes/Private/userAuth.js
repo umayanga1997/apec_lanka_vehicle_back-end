@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const auth_controller = require('../../Controllers/auth_controller');
-// const userVerify = require('../../Controllers/Tokens/userLoginVerifyToken');
 const mobileVerify = require('../../Controllers/Tokens/userMobileVerifyToken');
 
 //mobile number verifycation (firstly send otp and after otp verifycation)
