@@ -91,7 +91,7 @@ const putUserProfileDetails =async function (req,res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Data not found to update.",
+                    message: "Data Updated unsuccessfully",
                     data: [],
                 })
             }
@@ -127,7 +127,7 @@ const deleteUserProfile =async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Data not found to delete.",
+                    message: "Data Deleted unsuccessfully",
                     data: [],
                 })
             }

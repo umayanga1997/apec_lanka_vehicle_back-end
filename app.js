@@ -5,14 +5,21 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const dotenv = require('dotenv');
 
-//My routes
-const authRoute = require('./routes/Private/userAuth');
-const profileRoute = require('./routes/Private/userProfile');
-const citiesRoute = require('./routes/Public/cities');
-const vehicleTypesRoute = require('./routes/Public/vehiclesType');
-
 var app = express();
 dotenv.config();
+
+//My routes
+//Public Routes
+const citiesRoute = require('./routes/Public/cities');
+const vehicleTypesRoute = require('./routes/Public/vehiclesType');
+const vehiclesRoute = require('./routes/Public/vehicles');
+
+//PrivateRoutes
+const authRoute = require('./routes/Private/userAuth');
+const profileRoute = require('./routes/Private/userProfile');
+const citiesRoutePrivate = require('./routes/Private/cities');
+const vehicleTypesRoutePrivate = require('./routes/Private/vehiclesType');
+const vehiclesRoutePrivate = require('./routes/Private/vehicles');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,11 +31,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
-//My middlewares
-app.use('/vehicle/', authRoute);
-app.use('/vehicle/', profileRoute);
+//MY MIDDLEWARES
+//Public Middlewares
 app.use('/vehicle/', vehicleTypesRoute);
 app.use('/vehicle/', citiesRoute);
+app.use('/vehicle/', vehiclesRoute);
+
+//Private Middlewares
+app.use('/vehicle/', authRoute);
+app.use('/vehicle/', profileRoute);
+app.use('/vehicle/', vehicleTypesRoutePrivate);
+app.use('/vehicle/', citiesRoutePrivate);
+app.use('/vehicle/', vehiclesRoutePrivate);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
