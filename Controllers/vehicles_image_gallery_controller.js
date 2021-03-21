@@ -5,8 +5,8 @@ const {
     v4: uuidv4
 } = require('uuid');
 
-const getVImageGallery = async function (req, res, next) {
-    const response = await pool.query('SELECT * FROM vehicles_image_gallery')
+const getVImageGalleryByVID = async function (req, res, next) {
+    const response = await pool.query('SELECT * FROM vehicles_image_gallery WHERE v_id=$1', [req.params.v_id])
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
@@ -26,14 +26,14 @@ const getVImageGallery = async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -44,7 +44,7 @@ const postVImageGallery = async function (req, res, next) {
     const vImageURLList = req.body.v_image_url_list;
 
     try {
-        let promise = new Promise((resolve, reject) => {
+        let promise = new Promise(async(resolve, reject) => {
             for (var count in vImageURLList) {
                 const response = await pool.query("INSERT INTO vehicles_image_gallery(v_image_g_id, v_id, v_image_url) VALUES($1, $2, $3)", [uuidv4(),  vID, vImageURLList[count]]);
                 if (res.status(200)) {
@@ -57,7 +57,7 @@ const postVImageGallery = async function (req, res, next) {
                 } else {
                     reject({
                         done: false,
-                        message: "Has some issue(s) with status, Try again.",
+                        message: "A bad response, Please try again.",
                     })
                 }
             }
@@ -76,7 +76,7 @@ const postVImageGallery = async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -98,7 +98,7 @@ const putVImageGalleryByImageIDWithVID = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -110,7 +110,7 @@ const putVImageGalleryByImageIDWithVID = async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
     
@@ -134,7 +134,7 @@ const deleteVImageGalleryByImageIDWithVID = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -146,7 +146,7 @@ const deleteVImageGalleryByImageIDWithVID = async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -166,7 +166,7 @@ const deleteVImageGalleryByVID = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -178,13 +178,13 @@ const deleteVImageGalleryByVID = async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
 
 module.exports = {
-    getVImageGallery,
+    getVImageGalleryByVID,
     postVImageGallery,
     putVImageGalleryByImageIDWithVID,
     deleteVImageGalleryByImageIDWithVID,

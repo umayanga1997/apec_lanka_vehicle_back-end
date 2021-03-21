@@ -49,7 +49,7 @@ const userMobileOTP = async function (req, res, next) {
                     .catch(function (error) {
                         res.json({
                             done: true,
-                            message: "Can't send otp, Has some issue(s) with another, Try again.",
+                            message: "Can't send otp, Something went wrong, Please try again.",
                         });
                     });
                 
@@ -57,7 +57,7 @@ const userMobileOTP = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
 
             }
@@ -66,7 +66,7 @@ const userMobileOTP = async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -121,14 +121,14 @@ const otpVerification = async function (req, res, next) {
                     } else {
                         res.json({
                             done: false,
-                            message: "Has some issue(s) with status, Try again.",
+                            message: "A bad response, Please try again.",
                             data: []
                         })
                     }
                 } else {
                     res.json({
                         done: false,
-                        message: "Has some issue(s) with status, Try again.",
+                        message: "A bad response, Please try again.",
                         data: []
                     })
                 }
@@ -143,14 +143,14 @@ const otpVerification = async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -184,14 +184,14 @@ const userAuth = async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -227,20 +227,20 @@ const userRegister = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
 
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -270,13 +270,13 @@ const userLogin = async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }

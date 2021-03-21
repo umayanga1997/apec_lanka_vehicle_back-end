@@ -13,6 +13,7 @@ dotenv.config();
 const citiesRoute = require('./routes/Public/cities');
 const vehicleTypesRoute = require('./routes/Public/vehiclesType');
 const vehiclesRoute = require('./routes/Public/vehicles');
+const vehiclesImagesGalleryRoute = require('./routes/Public/vehicles_image_gallery');
 
 //PrivateRoutes
 const authRoute = require('./routes/Private/userAuth');
@@ -20,6 +21,7 @@ const profileRoute = require('./routes/Private/userProfile');
 const citiesRoutePrivate = require('./routes/Private/cities');
 const vehicleTypesRoutePrivate = require('./routes/Private/vehiclesType');
 const vehiclesRoutePrivate = require('./routes/Private/vehicles');
+const vehiclesImagesGalleryRoutePrivate = require('./routes/Private/vehicles_image_gallery');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,6 +38,7 @@ app.use(cookieParser());
 app.use('/vehicle/', vehicleTypesRoute);
 app.use('/vehicle/', citiesRoute);
 app.use('/vehicle/', vehiclesRoute);
+app.use('/vehicle/', vehiclesImagesGalleryRoute);
 
 //Private Middlewares
 app.use('/vehicle/', authRoute);
@@ -43,6 +46,7 @@ app.use('/vehicle/', profileRoute);
 app.use('/vehicle/', vehicleTypesRoutePrivate);
 app.use('/vehicle/', citiesRoutePrivate);
 app.use('/vehicle/', vehiclesRoutePrivate);
+app.use('/vehicle/', vehiclesImagesGalleryRoutePrivate);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

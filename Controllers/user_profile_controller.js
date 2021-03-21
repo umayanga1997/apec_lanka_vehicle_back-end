@@ -24,14 +24,14 @@ const getUserProfileDetails = async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -58,14 +58,14 @@ const getUsersProfileDetails =async function (req,res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -98,14 +98,14 @@ const putUserProfileDetails =async function (req,res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: [],
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -134,14 +134,14 @@ const deleteUserProfile =async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: [],
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }

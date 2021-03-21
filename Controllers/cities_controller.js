@@ -26,14 +26,14 @@ const getCities = async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -61,14 +61,14 @@ const getCityByID =async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -88,7 +88,7 @@ const postCity = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -100,7 +100,7 @@ const postCity = async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -122,7 +122,7 @@ const putCity =async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -134,7 +134,7 @@ const putCity =async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -156,7 +156,7 @@ const deleteCity =async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -168,7 +168,7 @@ const deleteCity =async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }

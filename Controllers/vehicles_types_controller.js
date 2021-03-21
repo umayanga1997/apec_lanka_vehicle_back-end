@@ -24,14 +24,14 @@ const getVTypes =async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -59,14 +59,14 @@ const getVTypeByID =async function (req, res, next) {
         } else {
             res.json({
                 done: false,
-                message: "Has some issue(s) with status, Try again.",
+                message: "A bad response, Please try again.",
                 data: []
             })
         }
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
             data: [],
         });
     }
@@ -86,7 +86,7 @@ const postVType =async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -98,14 +98,14 @@ const postVType =async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
 
 const putVType =async function (req, res, next) {
     const v_TypeName = req.body.v_type_name;
-    const v_TypeID = req.body.v_type_id;
+    const v_TypeID = req.params.v_type_id;
 
     const response = await pool.query("UPDATE vehicles_type SET v_type_name=$1 WHERE v_type_id=$2",
         [ v_TypeName, v_TypeID]);
@@ -120,7 +120,7 @@ const putVType =async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -132,7 +132,7 @@ const putVType =async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
@@ -153,7 +153,7 @@ const deleteVType =async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Has some issue(s) with status, Try again.",
+                    message: "A bad response, Please try again.",
                 })
             }
         } else {
@@ -165,7 +165,7 @@ const deleteVType =async function (req, res, next) {
     } catch (error) {
         res.json({
             done: false,
-            message: "Has some issue(s) with another, Try again.",
+            message: "Something went wrong, Please try again.",
         });
     }
 }
