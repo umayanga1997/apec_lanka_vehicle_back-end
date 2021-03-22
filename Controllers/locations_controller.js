@@ -5,8 +5,8 @@ const {
     v4: uuidv4
 } = require('uuid');
 
-const getCities = async function (req, res, next) {
-    const response = await pool.query('SELECT * FROM cities')
+const getlocations = async function (req, res, next) {
+    const response = await pool.query('SELECT * FROM locations')
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
@@ -39,9 +39,9 @@ const getCities = async function (req, res, next) {
     }
 }
 
-const getCityByID =async function (req, res, next) {
-    const cityID = req.params.city_id;
-    const response = await pool.query('SELECT * FROM cities WHERE city_id=$1', [cityID]);
+const getlocationByID =async function (req, res, next) {
+    const locationID = req.params.location_id;
+    const response = await pool.query('SELECT * FROM locations WHERE location_id=$1', [locationID]);
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
@@ -74,9 +74,9 @@ const getCityByID =async function (req, res, next) {
     }
 }
 
-const postCity = async function (req, res, next) {
-    const cityName = req.body.city_name;
-    const response = await pool.query("INSERT INTO cities(city_id,city_name) VALUES($1, $2)", [uuidv4(), cityName]);
+const postlocation = async function (req, res, next) {
+    const locationName = req.body.location_name;
+    const response = await pool.query("INSERT INTO locations(location_id,location_name) VALUES($1, $2)", [uuidv4(), locationName]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
@@ -105,12 +105,12 @@ const postCity = async function (req, res, next) {
     }
 }
 
-const putCity =async function (req, res, next) {
-    const cityName = req.body.city_name;
-    const cityID = req.body.city_id;
+const putlocation =async function (req, res, next) {
+    const locationName = req.body.location_name;
+    const locationID = req.body.location_id;
 
-    const response = await pool.query("UPDATE cities SET city_name=$1 WHERE city_id=$2",
-        [cityName, cityID]);
+    const response = await pool.query("UPDATE locations SET location_name=$1 WHERE location_id=$2",
+        [locationName, locationID]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
@@ -139,12 +139,12 @@ const putCity =async function (req, res, next) {
     }
 }
 
-const deleteCity =async function (req, res, next) {
+const deletelocation =async function (req, res, next) {
 
-    const cityID = req.params.city_id;
+    const locationID = req.params.location_id;
 
-    const response = await pool.query("DELETE FROM cities WHERE city_id=$1",
-        [cityID]);
+    const response = await pool.query("DELETE FROM locations WHERE location_id=$1",
+        [locationID]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
@@ -174,9 +174,9 @@ const deleteCity =async function (req, res, next) {
 }
 
 module.exports = {
-    getCities,
-    getCityByID,
-    postCity,
-    putCity,
-    deleteCity,
+    getlocations,
+    getlocationByID,
+    postlocation,
+    putlocation,
+    deletelocation,
 }

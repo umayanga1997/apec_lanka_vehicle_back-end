@@ -7,7 +7,7 @@ const {
 
 const getVehicles = async function (req, res, next) {
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT * FROM vehicles')
+    const responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1', ["owner"]);
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
@@ -76,7 +76,7 @@ const getVehicles = async function (req, res, next) {
 const getVehicleByID = async function (req, res, next) {
     const vID = req.params.v_id;
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT * FROM vehicles WHERE v_id=$1', [vID]);
+    const responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_id=$2', ["owner", vID]);
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
@@ -141,10 +141,10 @@ const getVehicleByID = async function (req, res, next) {
         });
     }
 }
-const getVehicleByOwnerID = async function (req, res, next) {
+const getVehiclesByOwnerID = async function (req, res, next) {
     const vOwnerID = req.params.v_owner_id;
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT * FROM vehicles WHERE v_owner_id=$1', [vOwnerID]);
+    const responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_owner_id=$2', ["owner", vOwnerID]);
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
@@ -209,11 +209,22 @@ const getVehicleByOwnerID = async function (req, res, next) {
     }
 }
 
-const getVehicleByTypeWithCity = async function (req, res, next) {
+const getVehiclesByTypeWithlocation = async function (req, res, next) {
     const vTypeID = req.params.v_type_id;
-    const vCityID = req.params.v_city_id;
+    const vlocationID = req.params.v_location_id;
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT * FROM vehicles WHERE v_city_id=$1 AND v_type_id=$2', [vCityID, vTypeID]);
+    var responseVehicles;
+    if ((vTypeID != "all" && vTypeID != null) && (vlocationID != "all" && vlocationID != null)) {
+        responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_location_id=$2 AND v.v_type_id=$3 AND u.acc_status_active=$4', ["owner", vlocationID, vTypeID, true]);
+    } else {
+        if(vTypeID != "all" && vTypeID != null){
+            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_type_id=$2 AND u.acc_status_active=$3', ["owner", vTypeID, true]);
+        }else if(vlocationID != "all" && vlocationID != null){
+            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_location_id=$2 AND u.acc_status_active=$3', ["owner", vlocationID, true]);
+        }else{
+            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND u.acc_status_active=$2', ["owner", true]);
+        }
+    }
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
@@ -283,13 +294,13 @@ const postVehicle = async function (req, res, next) {
     const vNoLetter = req.body.v_no_letter;
     const vNoNumber = req.body.v_no_number;
     const vName = req.body.v_name;
-    const vCityID = req.body.v_city_id;
+    const vlocationID = req.body.v_location_id;
     const vTypeID = req.body.v_type_id;
     const vDescription = req.body.v_description;
     const vProfImageURL = req.body.v_profile_image_url;
     const userId = req.userVerify._id.user_id;
 
-    const response = await pool.query("INSERT INTO vehicles(v_id,v_no_letter, v_no_no, v_name, v_city_id, v_type_id, v_description, v_profile_image_url, v_owner_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)", [uuidv4(), vNoLetter, vNoNumber, vName, vCityID, vTypeID, vDescription, vProfImageURL, userId]);
+    const response = await pool.query("INSERT INTO vehicles(v_id,v_no_letter, v_no_no, v_name, v_location_id, v_type_id, v_description, v_profile_image_url, v_owner_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)", [uuidv4(), vNoLetter, vNoNumber, vName, vlocationID, vTypeID, vDescription, vProfImageURL, userId]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
@@ -324,14 +335,14 @@ const putVehicleDetails = async function (req, res, next) {
     const vNoLetter = req.body.v_no_letter;
     const vNoNumber = req.body.v_no_number;
     const vName = req.body.v_name;
-    const vCityID = req.body.v_city_id;
+    const vlocationID = req.body.v_location_id;
     const vTypeID = req.body.v_type_id;
     const vDescription = req.body.v_description;
     const vProfImageURL = req.body.v_profile_image_url;
     const vStatus = req.body.v_status;
 
-    const response = await pool.query("UPDATE vehicles SET v_no_letter=$1, v_no_no=$2, v_name=$3, v_city_id=$4, v_type_id=$5, v_description=$6, v_profile_image_url=$7, v_status=$8 WHERE v_id=$9 AND v_owner_id=$10",
-        [vNoLetter, vNoNumber, vName, vCityID, vTypeID, vDescription, vProfImageURL, vStatus, vID, userId]);
+    const response = await pool.query("UPDATE vehicles SET v_no_letter=$1, v_no_no=$2, v_name=$3, v_location_id=$4, v_type_id=$5, v_description=$6, v_profile_image_url=$7, v_status=$8 WHERE v_id=$9 AND v_owner_id=$10",
+        [vNoLetter, vNoNumber, vName, vlocationID, vTypeID, vDescription, vProfImageURL, vStatus, vID, userId]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
@@ -432,8 +443,8 @@ const deleteVehicle = async function (req, res, next) {
 module.exports = {
     getVehicles,
     getVehicleByID,
-    getVehicleByOwnerID,
-    getVehicleByTypeWithCity,
+    getVehiclesByOwnerID,
+    getVehiclesByTypeWithlocation,
     postVehicle,
     putVehicleDetails,
     putVehicleStatus,

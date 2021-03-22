@@ -3,10 +3,10 @@ const {
 } = require('../Config/db');
 const algoliasearch = require("algoliasearch");
 
-async function pushItemsToAlgolia(city) {
+async function pushItemsToAlgolia(location) {
   try {
     const client = algoliasearch(process.env.Al_Application_ID, process.env.Al_Admin_API_Key);
-    const index = client.initIndex(`${city}_items`);
+    const index = client.initIndex(`${location}_items`);
 
     const response = await pool.query("select  items.* , CAST(avg(CASE when ir.rate_value != 0 then  ir.rate_value else 0 end) as decimal(2,1)) as rate from items full outer join  item_rates ir on items.item_id = ir.item_id group by items.item_count").then((result) => {
       var newIndexes = [];

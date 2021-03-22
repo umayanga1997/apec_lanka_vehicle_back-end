@@ -10,7 +10,7 @@ dotenv.config();
 
 //My routes
 //Public Routes
-const citiesRoute = require('./routes/Public/cities');
+const locationsRoute = require('./routes/Public/locations');
 const vehicleTypesRoute = require('./routes/Public/vehiclesType');
 const vehiclesRoute = require('./routes/Public/vehicles');
 const vehiclesImagesGalleryRoute = require('./routes/Public/vehicles_image_gallery');
@@ -18,7 +18,7 @@ const vehiclesImagesGalleryRoute = require('./routes/Public/vehicles_image_galle
 //PrivateRoutes
 const authRoute = require('./routes/Private/userAuth');
 const profileRoute = require('./routes/Private/userProfile');
-const citiesRoutePrivate = require('./routes/Private/cities');
+const locationsRoutePrivate = require('./routes/Private/locations');
 const vehicleTypesRoutePrivate = require('./routes/Private/vehiclesType');
 const vehiclesRoutePrivate = require('./routes/Private/vehicles');
 const vehiclesImagesGalleryRoutePrivate = require('./routes/Private/vehicles_image_gallery');
@@ -36,7 +36,7 @@ app.use(cookieParser());
 //MY MIDDLEWARES
 //Public Middlewares
 app.use('/vehicle/', vehicleTypesRoute);
-app.use('/vehicle/', citiesRoute);
+app.use('/vehicle/', locationsRoute);
 app.use('/vehicle/', vehiclesRoute);
 app.use('/vehicle/', vehiclesImagesGalleryRoute);
 
@@ -44,7 +44,7 @@ app.use('/vehicle/', vehiclesImagesGalleryRoute);
 app.use('/vehicle/', authRoute);
 app.use('/vehicle/', profileRoute);
 app.use('/vehicle/', vehicleTypesRoutePrivate);
-app.use('/vehicle/', citiesRoutePrivate);
+app.use('/vehicle/', locationsRoutePrivate);
 app.use('/vehicle/', vehiclesRoutePrivate);
 app.use('/vehicle/', vehiclesImagesGalleryRoutePrivate);
 
