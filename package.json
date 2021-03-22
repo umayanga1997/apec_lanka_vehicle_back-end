@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "algoliasearch": "^4.8.6",
@@ -22,5 +22,21 @@
     "nodemon": "^2.0.7",
     "pg": "^8.5.1",
     "uuid": "^8.3.2"
-  }
+  },
+  "description": "This is the node(express js) back-end of apec lanka vehicle department.",
+  "main": "./bin/www",
+  "bin": {
+    "apec-lanka-vehicle-back-end": "www.js"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umayanga1997/apec_lanka_vehicle_back-end.git"
+  },
+  "author": "apec lanka development",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/umayanga1997/apec_lanka_vehicle_back-end/issues"
+  },
+  "homepage": "https://github.com/umayanga1997/apec_lanka_vehicle_back-end#readme"
 }
