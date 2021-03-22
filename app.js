@@ -1,12 +1,10 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const dotenv = require('dotenv');
-
-var app = express();
-dotenv.config();
+const app = express();
 
 //My routes
 //Public Routes
@@ -22,6 +20,8 @@ const locationsRoutePrivate = require('./routes/Private/locations');
 const vehicleTypesRoutePrivate = require('./routes/Private/vehiclesType');
 const vehiclesRoutePrivate = require('./routes/Private/vehicles');
 const vehiclesImagesGalleryRoutePrivate = require('./routes/Private/vehicles_image_gallery');
+
+dotenv.config();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
