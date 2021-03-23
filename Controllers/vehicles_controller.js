@@ -7,7 +7,7 @@ const {
 
 const getVehicles = async function (req, res, next) {
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1', ["owner"]);
+    const responseVehicles = await pool.query('SELECT v.*, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id) WHERE u.user_type=$1', ["owner"]);
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
@@ -23,12 +23,39 @@ const getVehicles = async function (req, res, next) {
                                 }
 
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles.push(responseVehicles.rows[count]);
+                                // vehicles.push(responseVehicles.rows[count]);
                             } else {
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles.push(responseVehicles.rows[count]);
+                                // vehicles.push(responseVehicles.rows[count]);
                             }
 
+                        } else {
+                            reject({
+                                done: false,
+                                message: "Has some issue(s) with status, Try again.",
+                            });
+                        }
+                    }
+                    //Get locations from working location
+                    for (var count in responseVehicles.rows) {
+                        var location_name = "";
+                        const vID = responseVehicles.rows[count]['v_id'];
+                        var
+                            responseLocations = await pool.query("SELECT STRING_AGG(location_name, ', ') As location_name FROM locations WHERE location_id in (SELECT wl.location_id FROM vehicles_working_locations as wl WHERE wl.v_id=$1)", [vID]);
+
+                        if (res.status(200)) {
+                            if (responseLocations.rowCount != 0 && responseLocations.rowCount != null) {
+
+                                responseVehicles.rows[count]["location_name"] = responseLocations.rows[0]['location_name'];
+                                vehicles.push(responseVehicles.rows[count]);
+
+                            } else {
+
+                                responseVehicles.rows[count]["location_name"] = location_name;
+                                vehicles.push(responseVehicles.rows[count]);
+
+
+                            }
                         } else {
                             reject({
                                 done: false,
@@ -76,7 +103,7 @@ const getVehicles = async function (req, res, next) {
 const getVehicleByID = async function (req, res, next) {
     const vID = req.params.v_id;
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_id=$2', ["owner", vID]);
+    const responseVehicles = await pool.query('SELECT v.*, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id) WHERE u.user_type=$1 AND v.v_id=$2', ["owner", vID]);
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
@@ -92,12 +119,39 @@ const getVehicleByID = async function (req, res, next) {
                                 }
 
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles.push(responseVehicles.rows[count]);
+                                // vehicles.push(responseVehicles.rows[count]);
                             } else {
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles = responseVehicles.rows;
+                                // vehicles = responseVehicles.rows;
                             }
 
+                        } else {
+                            reject({
+                                done: false,
+                                message: "Has some issue(s) with status, Try again.",
+                            });
+                        }
+                    }
+                    //Get locations from working location
+                    for (var count in responseVehicles.rows) {
+                        var location_name = "";
+                        const vID = responseVehicles.rows[count]['v_id'];
+                        var
+                            responseLocations = await pool.query("SELECT STRING_AGG(location_name, ', ') As location_name FROM locations WHERE location_id in (SELECT wl.location_id FROM vehicles_working_locations as wl WHERE wl.v_id=$1)", [vID]);
+
+                        if (res.status(200)) {
+                            if (responseLocations.rowCount != 0 && responseLocations.rowCount != null) {
+
+                                responseVehicles.rows[count]["location_name"] = responseLocations.rows[0]['location_name'];
+                                vehicles.push(responseVehicles.rows[count]);
+
+                            } else {
+
+                                responseVehicles.rows[count]["location_name"] = location_name;
+                                vehicles.push(responseVehicles.rows[count]);
+
+
+                            }
                         } else {
                             reject({
                                 done: false,
@@ -144,7 +198,7 @@ const getVehicleByID = async function (req, res, next) {
 const getVehiclesByOwnerID = async function (req, res, next) {
     const vOwnerID = req.params.v_owner_id;
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_owner_id=$2', ["owner", vOwnerID]);
+    const responseVehicles = await pool.query('SELECT v.*, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id) WHERE u.user_type=$1 AND v.v_owner_id=$2', ["owner", vOwnerID]);
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
@@ -159,12 +213,39 @@ const getVehiclesByOwnerID = async function (req, res, next) {
                                     gallery.push(responseGallery.rows[countGallery]);
                                 }
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles.push(responseVehicles.rows[count]);
+                                // vehicles.push(responseVehicles.rows[count]);
                             } else {
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles.push(responseVehicles.rows[count]);
+                                // vehicles.push(responseVehicles.rows[count]);
                             }
 
+                        } else {
+                            reject({
+                                done: false,
+                                message: "Has some issue(s) with status, Try again.",
+                            });
+                        }
+                    }
+                    //Get locations from working location
+                    for (var count in responseVehicles.rows) {
+                        var location_name = "";
+                        const vID = responseVehicles.rows[count]['v_id'];
+                        var
+                            responseLocations = await pool.query("SELECT STRING_AGG(location_name, ', ') As location_name FROM locations WHERE location_id in (SELECT wl.location_id FROM vehicles_working_locations as wl WHERE wl.v_id=$1)", [vID]);
+
+                        if (res.status(200)) {
+                            if (responseLocations.rowCount != 0 && responseLocations.rowCount != null) {
+
+                                responseVehicles.rows[count]["location_name"] = responseLocations.rows[0]['location_name'];
+                                vehicles.push(responseVehicles.rows[count]);
+
+                            } else {
+
+                                responseVehicles.rows[count]["location_name"] = location_name;
+                                vehicles.push(responseVehicles.rows[count]);
+
+
+                            }
                         } else {
                             reject({
                                 done: false,
@@ -210,25 +291,22 @@ const getVehiclesByOwnerID = async function (req, res, next) {
 }
 
 const getVehiclesByTypeWithlocation = async function (req, res, next) {
-    const vTypeName = req.params.v_type_name;
-    const vlocationName = req.params.v_location_name;
+    const vTypeID = req.params.v_type_id;
+    const vLocationID = req.params.v_location_id;
     var vehicles = [];
     var responseVehicles;
-    if ((vTypeName != "All" && vTypeName != null) && (vlocationName != "All" && vlocationName != null)) {
-        responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND l.location_name=$2 AND vt.v_type_name=$3 AND u.acc_status_active=$4', ["owner", vlocationName, vTypeName, true]);
+
+    if (vTypeID != "All" && vTypeID != null) {
+        responseVehicles = await pool.query('SELECT v.*, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id ) WHERE u.user_type=$1 AND v.v_type_id=$2 AND u.acc_status_active=$3', ["owner", vTypeID, true]);
     } else {
-        if(vTypeName != "All" && vTypeName != null){
-            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND vt.v_type_name=$2 AND u.acc_status_active=$3', ["owner", vTypeName, true]);
-        }else if(vlocationName != "All" && vlocationName != null){
-            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND l.location_name=$2 AND u.acc_status_active=$3', ["owner", vlocationName, true]);
-        }else{
-            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND u.acc_status_active=$2', ["owner", true]);
-        }
+        responseVehicles = await pool.query('SELECT v.*, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id ) WHERE u.user_type=$1 AND u.acc_status_active=$2', ["owner", true]);
     }
+
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
                 let promise = new Promise(async (resolve, reject) => {
+                    //Get images from curent gallery
                     for (var count in responseVehicles.rows) {
                         var gallery = [];
                         const vID = responseVehicles.rows[count]['v_id'];
@@ -240,11 +318,11 @@ const getVehiclesByTypeWithlocation = async function (req, res, next) {
                                 }
 
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles.push(responseVehicles.rows[count]);
+                                // vehicles.push(responseVehicles.rows[count]);
 
                             } else {
                                 responseVehicles.rows[count]["gallery"] = gallery;
-                                vehicles.push(responseVehicles.rows[count]);
+                                // vehicles.push(responseVehicles.rows[count]);
                             }
 
                         } else {
@@ -254,6 +332,42 @@ const getVehiclesByTypeWithlocation = async function (req, res, next) {
                             });
                         }
                     }
+                    //Get locations from working location
+                    for (var count in responseVehicles.rows) {
+                        var location_name = "";
+                        const vID = responseVehicles.rows[count]['v_id'];
+                        var responseLocations;
+                        if (vLocationID != "All" && vLocationID != null) {
+                            responseLocations = await pool.query("SELECT STRING_AGG(location_name, ', ') As location_name FROM locations WHERE location_id in (SELECT wl.location_id FROM vehicles_working_locations as wl WHERE wl.v_id=$1 AND wl.location_id=$2)", [vID, vLocationID]);
+                        } else {
+                            responseLocations = await pool.query("SELECT STRING_AGG(location_name, ', ') As location_name FROM locations WHERE location_id in (SELECT wl.location_id FROM vehicles_working_locations as wl WHERE wl.v_id=$1)", [vID]);
+                        }
+                        if (res.status(200)) {
+                            if (responseLocations.rowCount != 0 && responseLocations.rowCount != null) {
+                                if (responseLocations.rows[0]['location_name'] != "" && responseLocations.rows[0]['location_name'] != null) {
+                                    responseVehicles.rows[count]["location_name"] = responseLocations.rows[0]['location_name'];
+                                    vehicles.push(responseVehicles.rows[count]);
+                                } else {
+                                    if (vLocationID == "All") {
+                                        responseVehicles.rows[count]["location_name"] = location_name;
+                                        vehicles.push(responseVehicles.rows[count]);
+                                    }
+                                }
+                            } else {
+                                if (vLocationID == "All") {
+                                    responseVehicles.rows[count]["location_name"] = location_name;
+                                    vehicles.push(responseVehicles.rows[count]);
+                                }
+
+                            }
+                        } else {
+                            reject({
+                                done: false,
+                                message: "Has some issue(s) with status, Try again.",
+                            });
+                        }
+                    }
+                    // vehicles.push(responseVehicles.rows);
                     resolve("Done");
                 })
                 promise.then((result) => {
@@ -280,8 +394,6 @@ const getVehiclesByTypeWithlocation = async function (req, res, next) {
                 data: []
             })
         }
-
-
     } catch (error) {
         res.json({
             done: false,
