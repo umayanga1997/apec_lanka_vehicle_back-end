@@ -7,6 +7,6 @@ const vehicles_controller = require('../../Controllers/vehicles_controller');
 router.get('/api/public/vehicles/',  vehicles_controller.getVehicles);
 router.get('/api/public/vehicle/:v_id', vehicles_controller.getVehicleByID);
 router.get('/api/public/vehicles/:v_owner_id', vehicles_controller.getVehiclesByOwnerID);
-router.get('/api/public/vehicles/:v_type_id/:v_location_id', vehicles_controller.getVehiclesByTypeWithlocation);
+router.get('/api/public/vehicles/:v_type_name/:v_location_name', vehicles_controller.getVehiclesByTypeWithlocation);
 
 module.exports = router;

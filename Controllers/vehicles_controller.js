@@ -210,17 +210,17 @@ const getVehiclesByOwnerID = async function (req, res, next) {
 }
 
 const getVehiclesByTypeWithlocation = async function (req, res, next) {
-    const vTypeID = req.params.v_type_id;
-    const vlocationID = req.params.v_location_id;
+    const vTypeName = req.params.v_type_name;
+    const vlocationName = req.params.v_location_name;
     var vehicles = [];
     var responseVehicles;
-    if ((vTypeID != "all" && vTypeID != null) && (vlocationID != "all" && vlocationID != null)) {
-        responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_location_id=$2 AND v.v_type_id=$3 AND u.acc_status_active=$4', ["owner", vlocationID, vTypeID, true]);
+    if ((vTypeName != "All" && vTypeName != null) && (vlocationName != "All" && vlocationName != null)) {
+        responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND l.location_name=$2 AND vt.v_type_name=$3 AND u.acc_status_active=$4', ["owner", vlocationName, vTypeName, true]);
     } else {
-        if(vTypeID != "all" && vTypeID != null){
-            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_type_id=$2 AND u.acc_status_active=$3', ["owner", vTypeID, true]);
-        }else if(vlocationID != "all" && vlocationID != null){
-            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND v.v_location_id=$2 AND u.acc_status_active=$3', ["owner", vlocationID, true]);
+        if(vTypeName != "All" && vTypeName != null){
+            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND vt.v_type_name=$2 AND u.acc_status_active=$3', ["owner", vTypeName, true]);
+        }else if(vlocationName != "All" && vlocationName != null){
+            responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND l.location_name=$2 AND u.acc_status_active=$3', ["owner", vlocationName, true]);
         }else{
             responseVehicles = await pool.query('SELECT v.*,l.location_name, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v FULL OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id FULL OUTER JOIN locations as l ON v.v_location_id = l.location_id) WHERE u.user_type=$1 AND u.acc_status_active=$2', ["owner", true]);
         }
