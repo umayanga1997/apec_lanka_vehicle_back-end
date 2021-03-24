@@ -37,7 +37,83 @@ const getUserProfileDetails = async function (req, res, next) {
     }
 }
 
-const getUsersProfileDetails =async function (req,res, next) {
+const getUserAccStatus = async function (req, res, next) {
+    const userId = req.userVerify._id.user_id;
+    const response = await pool.query("SELECT * FROM users WHERE user_id=$1", [userId]);
+    try {
+        if (res.status(200)) {
+            if (response.rowCount != 0 && response.rowCount != null) {
+
+                const paymentResponse = await pool.query("SELECT * FROM payments WHERE user_id=$1", [userId]);
+                if (paymentResponse.rowCount != 0 && paymentResponse.rowCount != null) {
+                    var getExpDate = new Date(response.rows[0]['exp_date']);
+                    var dateTimeNow = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+                    dateTimeNow = new Date(dateTimeNow);
+
+                    if (dateTimeNow > getExpDate) {
+                        const updateResponse = await pool.query("UPDATE users SET acc_status_active=$1 WHERE user_id=$2", [false, userId]);
+                        if (res.status(200)) {
+                            if (updateResponse.rowCount != 0 && updateResponse.rowCount != null) {
+                                res.json({
+                                    done: false,
+                                    message: "Your account is expire, Please update your account.",
+                                    data: [],
+                                })
+                            } else {
+                                res.json({
+                                    done: false,
+                                    message: "Your account is expired, But it not deactive.",
+                                    data: [],
+                                })
+                            }
+                        } else {
+                            res.json({
+                                done: false,
+                                message: "A bad response, Please try again.",
+                                data: []
+                            })
+                        }
+
+                    } else {
+                        res.json({
+                            done: true,
+                            message: "Done",
+                            data: [],
+                        })
+                    }
+                } else {
+                    res.json({
+                        done: false,
+                        message: "Your account is not activated, Please complete the payment.",
+                        data: [],
+                    })
+                }
+
+            } else {
+                res.json({
+                    done: false,
+                    message: "User data not found.",
+                    data: [],
+                })
+            }
+
+        } else {
+            res.json({
+                done: false,
+                message: "A bad response, Please try again.",
+                data: []
+            })
+        }
+    } catch (error) {
+        res.json({
+            done: false,
+            message: "Something went wrong, Please try again.",
+            data: [],
+        });
+    }
+}
+
+const getUsersProfileDetails = async function (req, res, next) {
     const response = await pool.query("SELECT * FROM users");
     try {
         if (res.status(200)) {
@@ -71,23 +147,23 @@ const getUsersProfileDetails =async function (req,res, next) {
     }
 }
 
-const putUserProfileDetails =async function (req,res, next) {
+const putUserProfileDetails = async function (req, res, next) {
     const userId = req.userVerify._id.user_id;
     const user_name = req.body.user_name;
     const mobileNo = req.body.mobile_no;
-    var response = res;
-    if(mobileNo !=null){
-        response = await pool.query("UPDATE users SET user_name=$1, phone_no=$2 WHERE user_id=$3", [user_name,mobileNo, userId]);
-    }else{
+    var response;
+    if (mobileNo != null) {
+        response = await pool.query("UPDATE users SET user_name=$1, phone_no=$2 WHERE user_id=$3", [user_name, mobileNo, userId]);
+    } else {
         response = await pool.query("UPDATE users SET user_name=$1 WHERE user_id=$2", [user_name, userId]);
     }
-    
+
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
-                    var setReq = req;
+                var setReq = req;
                 getUserProfileDetails(setReq, res, next);
-               
+
             } else {
                 res.json({
                     done: false,
@@ -110,11 +186,11 @@ const putUserProfileDetails =async function (req,res, next) {
         });
     }
 }
-const deleteUserProfile =async function (req, res, next) {
+const deleteUserProfile = async function (req, res, next) {
     const userIdForDeletion = req.body.user_id;
     const userMobileNo = req.body.mobile_no;
-    
-    const response = await pool.query("DELETE FROM users WHERE user_id=$1 AND phone_no=$2", [userIdForDeletion,userMobileNo]);
+
+    const response = await pool.query("DELETE FROM users WHERE user_id=$1 AND phone_no=$2", [userIdForDeletion, userMobileNo]);
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
@@ -123,7 +199,7 @@ const deleteUserProfile =async function (req, res, next) {
                     message: "Account hab been deleted.",
                     data: [],
                 })
-               
+
             } else {
                 res.json({
                     done: false,
@@ -147,9 +223,10 @@ const deleteUserProfile =async function (req, res, next) {
     }
 }
 
-module.exports={
+module.exports = {
     getUserProfileDetails,
     getUsersProfileDetails,
     putUserProfileDetails,
     deleteUserProfile,
+    getUserAccStatus
 }

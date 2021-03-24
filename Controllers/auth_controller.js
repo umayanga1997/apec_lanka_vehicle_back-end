@@ -52,7 +52,7 @@ const userMobileOTP = async function (req, res, next) {
                             message: "Can't send otp, Something went wrong, Please try again.",
                         });
                     });
-                
+
 
             } else {
                 res.json({
@@ -159,7 +159,7 @@ const userAuth = async function (req, res, next) {
     //the value is get from the verified token requeast 
     const token_data = req.mobileToken;
 
-    const response = await pool.query("SELECT user_name, phone_no,reg_date,user_type FROM users WHERE phone_no=$1", [token_data._mobile_no]);
+    const response = await pool.query("SELECT * FROM users WHERE phone_no=$1", [token_data._mobile_no]);
 
     try {
         if (res.status(200)) {
@@ -199,38 +199,55 @@ const userAuth = async function (req, res, next) {
 
 const userRegister = async function (req, res, next) {
     const userName = req.body.user_name;
+    const expMothCount = req.body.exp_month;
+    const numberOfVehicles = req.body.number_of_vehicles;
+    const userType = req.body.user_type;
     //the value is get from the verified token requeast 
     const token_data = req.mobileToken;
     //format date time
     var date = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+    var expDate = new Date();
 
-    const response = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date)VALUES($1,$2,$3,$4)", [uuidv4(), userName, token_data._mobile_no, date]);
     try {
+        //set account expire date
+        expDate.setMonth(expDate.getMonth() + expMothCount);
+        expDate = dateFormat(expDate, "yyyy-mm-dd h:MM:ss");
+
+        const responseReg = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date,exp_date, number_of_vehicles, user_type)VALUES($1,$2,$3,$4,$5,$6,$7)", [uuidv4(), userName, token_data._mobile_no, date, expDate, numberOfVehicles, userType]);
+
         if (res.status(200)) {
-            const response = await pool.query("SELECT * FROM users WHERE phone_no=$1", [token_data._mobile_no]);
-            //create and assign a token
-            const token = jwt.sign({
-                _id: response.rows[0],
-            }, process.env.TOKEN_SECRET, );
-            res.header("auth-token", token);
-            if (res.status(200)) {
-                res.json({
-                    done: true,
-                    message: "Your successfully Registered with Login.",
-                    data: [{
-                        "user_name": response.rows[0]['user_name'],
-                        "phone_no": response.rows[0]['phone_no'],
-                        "reg_date": response.rows[0]['reg_date'],
-                        "user_type": response.rows[0]['user_type']
-                    }]
-                })
+            if (responseReg.rowCount != 0 && responseReg.rowCount != null) {
+                const response = await pool.query("SELECT * FROM users WHERE phone_no=$1", [token_data._mobile_no]);
+                //create and assign a token
+                const token = jwt.sign({
+                    _id: response.rows[0],
+                }, process.env.TOKEN_SECRET, );
+                res.header("auth-token", token);
+                if (res.status(200)) {
+                    res.json({
+                        done: true,
+                        message: "Your successfully Registered with Login.",
+                        data: [{
+                            "user_name": response.rows[0]['user_name'],
+                            "phone_no": response.rows[0]['phone_no'],
+                            "reg_date": response.rows[0]['reg_date'],
+                            "exp_date": response.rows[0]['exp_date'],
+                            "user_type": response.rows[0]['user_type']
+                        }]
+                    })
+                } else {
+                    res.json({
+                        done: false,
+                        message: "A bad response, Please try again.",
+                    })
+                }
             } else {
                 res.json({
-                    done: false,
-                    message: "A bad response, Please try again.",
+                    done: true,
+                    message: "Something went wrong, Can't register your account, Please try again.",
+                    data: [],
                 })
             }
-
         } else {
             res.json({
                 done: false,
@@ -260,10 +277,11 @@ const userLogin = async function (req, res, next) {
             res.json({
                 done: true,
                 message: "Your successfully Login.",
-                data:  [{
+                data: [{
                     "user_name": response.rows[0]['user_name'],
                     "phone_no": response.rows[0]['phone_no'],
                     "reg_date": response.rows[0]['reg_date'],
+                    "exp_date": response.rows[0]['exp_date'],
                     "user_type": response.rows[0]['user_type']
                 }]
             })

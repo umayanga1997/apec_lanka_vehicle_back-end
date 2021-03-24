@@ -8,5 +8,6 @@ router.get('/api/user/profiles/',userVerify, profile_controller.getUsersProfileD
 router.put('/api/user/profile/', userVerify, profile_controller.putUserProfileDetails);
 // router.put('/api/user/profile/status/', userVerify, profile_controller.putUserProfileStatus);
 router.delete('/api/user/profile/', userVerify, profile_controller.deleteUserProfile);
+router.get('/api/user/auth/verify/acc/',userVerify,  profile_controller.getUserAccStatus);
 
 module.exports = router;
