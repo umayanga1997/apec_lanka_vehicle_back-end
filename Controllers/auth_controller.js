@@ -213,7 +213,7 @@ const userRegister = async function (req, res, next) {
         expDate.setMonth(expDate.getMonth() + expMothCount);
         expDate = dateFormat(expDate, "yyyy-mm-dd h:MM:ss");
 
-        const responseReg = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date,exp_date, number_of_vehicles, user_type)VALUES($1,$2,$3,$4,$5,$6,$7)", [uuidv4(), userName, token_data._mobile_no, date, expDate, numberOfVehicles, userType]);
+        const responseReg = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date,exp_date, number_of_vehicles, user_type, update_date)VALUES($1,$2,$3,$4,$5,$6,$7,$8)", [uuidv4(), userName, token_data._mobile_no, date, expDate, numberOfVehicles, userType, date]);
 
         if (res.status(200)) {
             if (responseReg.rowCount != 0 && responseReg.rowCount != null) {
@@ -232,6 +232,8 @@ const userRegister = async function (req, res, next) {
                             "phone_no": response.rows[0]['phone_no'],
                             "reg_date": response.rows[0]['reg_date'],
                             "exp_date": response.rows[0]['exp_date'],
+                            "update_date": response.rows[0]['update_date'],
+                            "number_of_vehicles": response.rows[0]['number_of_vehicles'],
                             "user_type": response.rows[0]['user_type']
                         }]
                     })
@@ -282,6 +284,8 @@ const userLogin = async function (req, res, next) {
                     "phone_no": response.rows[0]['phone_no'],
                     "reg_date": response.rows[0]['reg_date'],
                     "exp_date": response.rows[0]['exp_date'],
+                    "update_date": response.rows[0]['update_date'],
+                    "number_of_vehicles": response.rows[0]['number_of_vehicles'],
                     "user_type": response.rows[0]['user_type']
                 }]
             })

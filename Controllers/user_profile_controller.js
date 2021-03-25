@@ -4,7 +4,7 @@ const {
 
 const getUserProfileDetails = async function (req, res, next) {
     const userId = req.userVerify._id.user_id;
-    const response = await pool.query("SELECT user_name, phone_no,reg_date,user_type FROM users WHERE user_id=$1", [userId]);
+    const response = await pool.query("SELECT user_name, phone_no,reg_date,user_type, exp_date, update_date, number_of_vehicles FROM users WHERE user_id=$1", [userId]);
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
@@ -84,7 +84,7 @@ const getUserAccStatus = async function (req, res, next) {
                 } else {
                     res.json({
                         done: false,
-                        message: "Your account is not activated, Please complete the payment.",
+                        message: "Your account is not activated,\nPlease make the payment.",
                         data: [],
                     })
                 }
