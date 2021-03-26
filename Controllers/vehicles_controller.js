@@ -32,7 +32,7 @@ const getVehicles = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -59,7 +59,7 @@ const getVehicles = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -68,7 +68,7 @@ const getVehicles = async function (req, res, next) {
                 promise.then((result) => {
                     res.send({
                         done: true,
-                        message: "Fetched Successfully.",
+                        message: "Data retrieval successfully.",
                         data: vehicles,
                     });
                 }).catch((error) => {
@@ -128,7 +128,7 @@ const getVehicleByID = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -155,7 +155,7 @@ const getVehicleByID = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -164,7 +164,7 @@ const getVehicleByID = async function (req, res, next) {
                 promise.then((result) => {
                     res.send({
                         done: true,
-                        message: "Fetched Successfully.",
+                        message: "Data retrieval successfully.",
                         data: vehicles,
                     });
                 }).catch((error) => {
@@ -222,7 +222,7 @@ const getVehiclesByOwnerID = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -249,7 +249,7 @@ const getVehiclesByOwnerID = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -258,7 +258,7 @@ const getVehiclesByOwnerID = async function (req, res, next) {
                 promise.then((result) => {
                     res.send({
                         done: true,
-                        message: "Fetched Successfully.",
+                        message: "Data retrieval successfully.",
                         data: vehicles,
                     });
                 }).catch((error) => {
@@ -328,7 +328,7 @@ const getVehiclesByTypeWithlocation = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -363,7 +363,7 @@ const getVehiclesByTypeWithlocation = async function (req, res, next) {
                         } else {
                             reject({
                                 done: false,
-                                message: "Has some issue(s) with status, Try again.",
+                                message: "A bad response, Please try again.",
                             });
                         }
                     }
@@ -373,7 +373,7 @@ const getVehiclesByTypeWithlocation = async function (req, res, next) {
                 promise.then((result) => {
                     res.send({
                         done: true,
-                        message: "Fetched Successfully.",
+                        message: "Data retrieval successfully.",
                         data: vehicles,
                     });
                 }).catch((error) => {
@@ -419,7 +419,7 @@ const postVehicle = async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Inserted successfully",
+                    message: "Data inserted successfully.",
                 })
             } else {
                 res.json({
@@ -430,7 +430,7 @@ const postVehicle = async function (req, res, next) {
         } else {
             res.json({
                 done: true,
-                message: "Data Inserted unsuccessfully",
+                message: "Data inserted unsuccessfully.",
             })
         }
     } catch (error) {
@@ -461,7 +461,7 @@ const putVehicleDetails = async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Updated successfully",
+                    message: "Data updated successfully.",
                 })
             } else {
                 res.json({
@@ -496,7 +496,7 @@ const putVehicleStatus = async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Updated successfully",
+                    message: "Data updated successfully.",
                 })
             } else {
                 res.json({
@@ -541,7 +541,7 @@ const deleteVehicle = async function (req, res, next) {
         } else {
             res.json({
                 done: true,
-                message: "Data Deleted unsuccessfully",
+                message: "Data deleted unsuccessfully.",
             })
         }
     } catch (error) {

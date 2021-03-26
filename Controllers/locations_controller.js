@@ -83,7 +83,7 @@ const postlocation = async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Inserted successfully",
+                    message: "Data inserted successfully.",
                 })
             } else {
                 res.json({
@@ -94,7 +94,7 @@ const postlocation = async function (req, res, next) {
         } else {
             res.json({
                 done: true,
-                message: "Data Inserted unsuccessfully",
+                message: "Data inserted unsuccessfully.",
             })
         }
     } catch (error) {
@@ -117,7 +117,7 @@ const putlocation =async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Updated successfully",
+                    message: "Data updated successfully.",
                 })
             } else {
                 res.json({
@@ -162,7 +162,7 @@ const deletelocation =async function (req, res, next) {
         } else {
             res.json({
                 done: true,
-                message: "Data Deleted unsuccessfully",
+                message: "Data deleted unsuccessfully.",
             })
         }
     } catch (error) {

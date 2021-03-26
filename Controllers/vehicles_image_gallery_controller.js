@@ -51,7 +51,7 @@ const postVImageGallery = async function (req, res, next) {
                     if (response.rowCount == 0 || response.rowCount == null) {
                         reject({
                             done: true,
-                            message: "Data Inserted unsuccessfully",
+                            message: "Data inserted unsuccessfully.",
                         });
                     }
                 } else {
@@ -67,7 +67,7 @@ const postVImageGallery = async function (req, res, next) {
         promise.then((result) => {
             res.json({
                 done: true,
-                message: "Data Inserted successfully",
+                message: "Data inserted successfully.",
             })
         }).catch((error) => {
             res.json(error);
@@ -93,7 +93,7 @@ const putVImageGalleryByImageIDWithVID = async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Updated successfully",
+                    message: "Data updated successfully.",
                 })
             } else {
                 res.json({
@@ -140,7 +140,7 @@ const deleteVImageGalleryByImageIDWithVID = async function (req, res, next) {
         } else {
             res.json({
                 done: true,
-                message: "Data Deleted unsuccessfully",
+                message: "Data deleted unsuccessfully.",
             })
         }
     } catch (error) {
@@ -172,7 +172,7 @@ const deleteVImageGalleryByVID = async function (req, res, next) {
         } else {
             res.json({
                 done: true,
-                message: "Data Deleted unsuccessfully",
+                message: "Data deleted unsuccessfully.",
             })
         }
     } catch (error) {

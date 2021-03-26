@@ -44,7 +44,7 @@ const getUserAccStatus = async function (req, res, next) {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
 
-                const paymentResponse = await pool.query("SELECT * FROM payments WHERE user_id=$1", [userId]);
+                const paymentResponse = await pool.query("SELECT * FROM payments_transactions WHERE user_id=$1", [userId]);
                 if (paymentResponse.rowCount != 0 && paymentResponse.rowCount != null) {
                     var getExpDate = new Date(response.rows[0]['exp_date']);
                     var dateTimeNow = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
@@ -167,7 +167,7 @@ const putUserProfileDetails = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Data Updated unsuccessfully",
+                    message: "Account updated successfully.",
                     data: [],
                 })
             }
@@ -203,7 +203,7 @@ const deleteUserProfile = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "Data Deleted unsuccessfully",
+                    message: "Data deleted unsuccessfully.",
                     data: [],
                 })
             }

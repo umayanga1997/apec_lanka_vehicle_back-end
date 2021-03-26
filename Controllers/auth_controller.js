@@ -43,7 +43,7 @@ const userMobileOTP = async function (req, res, next) {
 
                         res.json({
                             done: true,
-                            message: "OTP Request has been accepted.",
+                            message: "OTP request has been accepted.",
                         });
                     })
                     .catch(function (error) {
@@ -108,13 +108,13 @@ const otpVerification = async function (req, res, next) {
                             //set responce to body
                             res.json({
                                 done: true,
-                                message: "Otp has been veryfied",
+                                message: "OTP is verified.",
                                 data: [],
                             });
                         } else {
                             res.json({
                                 done: false,
-                                message: "Otp not veryfied",
+                                message: "OTP is not veryfied.",
                                 data: [],
                             })
                         }
@@ -136,7 +136,7 @@ const otpVerification = async function (req, res, next) {
             } else {
                 res.json({
                     done: false,
-                    message: "The Otp Code is Wrong.",
+                    message: "OTP Code is Wrong.",
                     data: [],
                 })
             }
@@ -166,7 +166,7 @@ const userAuth = async function (req, res, next) {
             if (response.rowCount != 0 && response.rowCount != null) {
                 res.json({
                     done: true,
-                    message: "Registered Account",
+                    message: "Registered account.",
                     data: {
                         registered: true,
                     },
@@ -174,7 +174,7 @@ const userAuth = async function (req, res, next) {
             } else {
                 res.json({
                     done: true,
-                    message: "Non-Registered Account",
+                    message: "Not registered.",
                     data: {
                         registered: false,
                     },
@@ -226,7 +226,7 @@ const userRegister = async function (req, res, next) {
                 if (res.status(200)) {
                     res.json({
                         done: true,
-                        message: "Your successfully Registered with Login.",
+                        message: "You have registered successfully..",
                         data: [{
                             "user_name": response.rows[0]['user_name'],
                             "phone_no": response.rows[0]['phone_no'],
@@ -278,7 +278,7 @@ const userLogin = async function (req, res, next) {
         if (res.status(200)) {
             res.json({
                 done: true,
-                message: "Your successfully Login.",
+                message: "You logged in successfully.",
                 data: [{
                     "user_name": response.rows[0]['user_name'],
                     "phone_no": response.rows[0]['phone_no'],

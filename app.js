@@ -12,6 +12,7 @@ const locationsRoute = require('./routes/Public/locations');
 const vehicleTypesRoute = require('./routes/Public/vehiclesType');
 const vehiclesRoute = require('./routes/Public/vehicles');
 const vehiclesImagesGalleryRoute = require('./routes/Public/vehicles_image_gallery');
+const transactionConfigRoute = require('./routes/Public/transactionConfig');
 
 //PrivateRoutes
 const authRoute = require('./routes/Private/userAuth');
@@ -39,6 +40,7 @@ app.use('/vehicle/', vehicleTypesRoute);
 app.use('/vehicle/', locationsRoute);
 app.use('/vehicle/', vehiclesRoute);
 app.use('/vehicle/', vehiclesImagesGalleryRoute);
+app.use('/vehicle/', transactionConfigRoute);
 
 //Private Middlewares
 app.use('/vehicle/', authRoute);
