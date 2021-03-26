@@ -1,6 +1,7 @@
 const {
     pool
 } = require('../Config/db');
+var dateFormat = require("dateformat");
 
 const getUserProfileDetails = async function (req, res, next) {
     const userId = req.userVerify._id.user_id;
