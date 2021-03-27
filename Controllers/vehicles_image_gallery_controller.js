@@ -17,7 +17,7 @@ const getVImageGalleryByVID = async function (req, res, next) {
                 })
             } else {
                 res.json({
-                    done: true,
+                    done: false,
                     message: "Data not found.",
                     data: [],
                 })
@@ -50,7 +50,7 @@ const postVImageGallery = async function (req, res, next) {
                 if (res.status(200)) {
                     if (response.rowCount == 0 || response.rowCount == null) {
                         reject({
-                            done: true,
+                            done: false,
                             message: "Data inserted unsuccessfully.",
                         });
                     }
@@ -103,8 +103,8 @@ const putVImageGalleryByImageIDWithVID = async function (req, res, next) {
             }
         } else {
             res.json({
-                done: true,
-                message: "Data Updated unsuccessfully",
+                done: false,
+                message: "Data updated unsuccessfully.",
             })
         }
     } catch (error) {
@@ -129,7 +129,7 @@ const deleteVImageGalleryByImageIDWithVID = async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Deleted successfully",
+                    message: "Data deleted successfully.",
                 })
             } else {
                 res.json({
@@ -139,7 +139,7 @@ const deleteVImageGalleryByImageIDWithVID = async function (req, res, next) {
             }
         } else {
             res.json({
-                done: true,
+                done: false,
                 message: "Data deleted unsuccessfully.",
             })
         }
@@ -161,7 +161,7 @@ const deleteVImageGalleryByVID = async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Deleted successfully",
+                    message: "Data deleted successfully.",
                 })
             } else {
                 res.json({
@@ -171,7 +171,7 @@ const deleteVImageGalleryByVID = async function (req, res, next) {
             }
         } else {
             res.json({
-                done: true,
+                done: false,
                 message: "Data deleted unsuccessfully.",
             })
         }

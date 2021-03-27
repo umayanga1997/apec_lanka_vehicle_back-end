@@ -48,7 +48,7 @@ const userMobileOTP = async function (req, res, next) {
                     })
                     .catch(function (error) {
                         res.json({
-                            done: true,
+                            done: false,
                             message: "Can't send otp, Something went wrong, Please try again.",
                         });
                     });
@@ -245,7 +245,7 @@ const userRegister = async function (req, res, next) {
                 }
             } else {
                 res.json({
-                    done: true,
+                    done: false,
                     message: "Something went wrong, Can't register your account, Please try again.",
                     data: [],
                 })

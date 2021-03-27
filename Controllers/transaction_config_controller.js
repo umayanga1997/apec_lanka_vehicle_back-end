@@ -23,7 +23,7 @@ const getConfig = async function (req, res, next) {
                 })
             } else {
                 res.json({
-                    done: true,
+                    done: false,
                     message: "Transaction data not found.",
                     data: [],
                 })

@@ -15,7 +15,7 @@ const getVTypes =async function (req, res, next) {
                 })
             } else {
                 res.json({
-                    done: true,
+                    done: false,
                     message: "Data not found.",
                     data: [],
                 })
@@ -50,7 +50,7 @@ const getVTypeByID =async function (req, res, next) {
                 })
             } else {
                 res.json({
-                    done: true,
+                    done: false,
                     message: "Data not found.",
                     data: [],
                 })
@@ -91,7 +91,7 @@ const postVType =async function (req, res, next) {
             }
         } else {
             res.json({
-                done: true,
+                done:false,
                 message: "Data inserted unsuccessfully.",
             })
         }
@@ -125,8 +125,8 @@ const putVType =async function (req, res, next) {
             }
         } else {
             res.json({
-                done: true,
-                message: "Data Updated unsuccessfully",
+                done: false,
+                message: "Data updated unsuccessfully.",
             })
         }
     } catch (error) {
@@ -148,7 +148,7 @@ const deleteVType =async function (req, res, next) {
             if (res.status(200)) {
                 res.json({
                     done: true,
-                    message: "Data Deleted successfully",
+                    message: "Data deleted successfully.",
                 })
             } else {
                 res.json({
@@ -158,7 +158,7 @@ const deleteVType =async function (req, res, next) {
             }
         } else {
             res.json({
-                done: true,
+                done: false,
                 message: "Data deleted unsuccessfully.",
             })
         }

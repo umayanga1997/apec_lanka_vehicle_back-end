@@ -16,7 +16,7 @@ const getUserProfileDetails = async function (req, res, next) {
                 })
             } else {
                 res.json({
-                    done: true,
+                    done: false,
                     message: "Data not found.",
                     data: [],
                 })
@@ -126,7 +126,7 @@ const getUsersProfileDetails = async function (req, res, next) {
                 })
             } else {
                 res.json({
-                    done: true,
+                    done: false,
                     message: "Data not found.",
                     data: [],
                 })
@@ -167,7 +167,7 @@ const putUserProfileDetails = async function (req, res, next) {
 
             } else {
                 res.json({
-                    done: false,
+                    done: true,
                     message: "Account updated successfully.",
                     data: [],
                 })
