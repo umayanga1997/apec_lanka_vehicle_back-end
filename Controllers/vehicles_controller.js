@@ -489,12 +489,14 @@ const postVehicle = async function (req, res, next) {
     const vNoLetter = req.body.v_no_letter;
     const vNoNumber = req.body.v_no_number;
     const vName = req.body.v_name;
-    const vlocationID = req.body.v_location_id;
     const vTypeID = req.body.v_type_id;
     const vDescription = req.body.v_description;
-    var vProfImageURL = req.body.v_profile_image_url;
+    const vProfImageURL = req.body.v_profile_image_url;
     const userId = req.userVerify._id.user_id;
-    const response = await pool.query("INSERT INTO vehicles(v_id,v_no_letter, v_no_no, v_name, v_location_id, v_type_id, v_description, v_profile_image_url, v_owner_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)", [uuidv4(), vNoLetter, vNoNumber, vName, vlocationID, vTypeID, vDescription, vProfImageURL, userId]);
+    const vlocationIDList = req.body.v_location_list;
+    const vGalleryImageURLList = req.body.v_gallery_image_url_list;
+
+    const response = await pool.query("INSERT INTO vehicles(v_id,v_no_letter, v_no_number, v_name,  v_type_id, v_description, v_profile_image_url, v_owner_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8)", [uuidv4(), vNoLetter, vNoNumber, vName, vTypeID, vDescription, vProfImageURL, userId]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
