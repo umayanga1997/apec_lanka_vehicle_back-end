@@ -441,7 +441,6 @@ const getVehiclesByTypeWithlocation = async function (req, res, next) {
                                     responseVehicles.rows[count]["location_name"] = location_name;
                                     vehicles.push(responseVehicles.rows[count]);
                                 }
-
                             }
                         } else {
                             reject({
@@ -495,16 +494,60 @@ const postVehicle = async function (req, res, next) {
     const userId = req.userVerify._id.user_id;
     const vlocationIDList = req.body.v_location_list;
     const vGalleryImageURLList = req.body.v_gallery_image_url_list;
+    const vID = uuidv4();
 
-    const response = await pool.query("INSERT INTO vehicles(v_id,v_no_letter, v_no_number, v_name,  v_type_id, v_description, v_profile_image_url, v_owner_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8)", [uuidv4(), vNoLetter, vNoNumber, vName, vTypeID, vDescription, vProfImageURL, userId]);
+    const response = await pool.query("INSERT INTO vehicles(v_id,v_no_letter, v_no_number, v_name,  v_type_id, v_description, v_profile_image_url, v_owner_id) VALUES($1, $2, $3, $4, $5, $6, $7, $8)", [vID, vNoLetter, vNoNumber, vName, vTypeID, vDescription, vProfImageURL, userId]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
             if (res.status(200)) {
-                res.json({
-                    done: true,
-                    message: "Data inserted successfully.",
+                let promise = new Promise(async(resolve, reject) => {
+                    for (const count in vlocationIDList) {
+                        const responseLocation = await pool.query("INSERT INTO vehicles_working_locations(vw_id,v_id, location_id)VALUES($1,$2,$3)", [uuidv4(), vID, vlocationIDList[count]['data_id']]);
+
+                        if (!res.status(200)) {
+                            reject({
+                                done: false,
+                                message: "A bad response, Please try again.",
+                            });
+                        } else {
+                            if (responseLocation.rowCount == 0 || responseLocation.rowCount == null) {
+                                reject({
+                                    done: false,
+                                    message: "Something went wrong with working locations, Please try again.",
+                                });
+                            }
+                        }
+                    }
+                    for (const count in vGalleryImageURLList) {
+                        const responseGallery = await pool.query("INSERT INTO vehicles_image_gallery(v_image_g_id,v_id, v_image_url)VALUES($1,$2,$3)", [uuidv4(), vID, vGalleryImageURLList[count]]);
+
+                        if (!res.status(200)) {
+                            reject({
+                                done: false,
+                                message: "A bad response, Please try again.",
+                            });
+                        } else {
+                            if (responseGallery.rowCount == 0 || responseGallery.rowCount == null) {
+                                reject({
+                                    done: false,
+                                    message: "Something went wrong with gallery, Please try again.",
+                                });
+                            }
+                        }
+                    }
+                    resolve('Done');
                 })
+
+                promise.then((result) => {
+                    res.json({
+                        done: true,
+                        message: "Data inserted successfully.",
+                    });
+                }).catch((error) => {
+                    res.json(error);
+                });
+
             } else {
                 res.json({
                     done: false,
