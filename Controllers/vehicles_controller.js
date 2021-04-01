@@ -501,7 +501,7 @@ const postVehicle = async function (req, res, next) {
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
             if (res.status(200)) {
-                let promise = new Promise(async(resolve, reject) => {
+                let promise = new Promise(async (resolve, reject) => {
                     for (const count in vlocationIDList) {
                         const responseLocation = await pool.query("INSERT INTO vehicles_working_locations(vw_id,v_id, location_id)VALUES($1,$2,$3)", [uuidv4(), vID, vlocationIDList[count]['data_id']]);
 
@@ -574,22 +574,85 @@ const putVehicleDetails = async function (req, res, next) {
     const vNoLetter = req.body.v_no_letter;
     const vNoNumber = req.body.v_no_number;
     const vName = req.body.v_name;
-    const vlocationID = req.body.v_location_id;
     const vTypeID = req.body.v_type_id;
     const vDescription = req.body.v_description;
     const vProfImageURL = req.body.v_profile_image_url;
-    const vStatus = req.body.v_status;
+    const vlocationIDList = req.body.v_location_list;
+    const vGalleryImageURLList = req.body.v_gallery_image_url_list;
+    const vGalleryImageURLListRemove = req.body.v_gallery_image_url_list_remove;
 
-    const response = await pool.query("UPDATE vehicles SET v_no_letter=$1, v_no_no=$2, v_name=$3, v_location_id=$4, v_type_id=$5, v_description=$6, v_profile_image_url=$7, v_status=$8 WHERE v_id=$9 AND v_owner_id=$10",
-        [vNoLetter, vNoNumber, vName, vlocationID, vTypeID, vDescription, vProfImageURL, vStatus, vID, userId]);
+    const response = await pool.query("UPDATE vehicles SET v_no_letter=$1, v_no_number=$2, v_name=$3, v_type_id=$4, v_description=$5, v_profile_image_url=$6 WHERE v_id=$7 AND v_owner_id=$8",
+        [vNoLetter, vNoNumber, vName, vTypeID, vDescription, vProfImageURL, vID, userId]);
 
     try {
         if (response.rowCount != 0 && response.rowCount != null) {
             if (res.status(200)) {
-                res.json({
-                    done: true,
-                    message: "Data updated successfully.",
+                let promise = new Promise(async (resolve, reject) => {
+                    if (vlocationIDList.length != 0) {
+                        const responseDeleteLocations = await pool.query("DELETE FROM vehicles_working_locations WHERE v_id=$1", [vID]);
+                        if (responseDeleteLocations.rowCount != 0 && responseDeleteLocations.rowCount != null) {
+                            if (res.status(200)) {
+                                for (const count in vlocationIDList) {
+                                    const responseLocation = await pool.query("INSERT INTO vehicles_working_locations(vw_id,v_id, location_id)VALUES($1,$2,$3)", [uuidv4(), vID, vlocationIDList[count]['data_id']]);
+
+                                    if (!res.status(200)) {
+                                        reject({
+                                            done: false,
+                                            message: "A bad response, Please try again.",
+                                        });
+                                    } else {
+                                        if (responseLocation.rowCount == 0 || responseLocation.rowCount == null) {
+                                            reject({
+                                                done: false,
+                                                message: "Something went wrong with working locations, Please try again.",
+                                            });
+                                        }
+                                    }
+                                }
+                            } else {
+                                reject({
+                                    done: false,
+                                    message: "A bad response, Please try again.",
+                                });
+                            }
+                        } else {
+                            reject({
+                                done: false,
+                                message: "Something went wrong with delete previous data, Please try again.",
+                            });
+                        }
+
+                    }
+                    if (vGalleryImageURLList.length != 0) {
+                        for (const count in vGalleryImageURLListRemove) {
+                            const responseGalleryUpdate = await pool.query("UPDATE vehicles_image_gallery SET v_image_url=$1 WHERE v_id=$2 AND v_image_url=$3", [vGalleryImageURLList[count], vID, vGalleryImageURLListRemove[count]]);
+
+                            if (!res.status(200)) {
+                                reject({
+                                    done: false,
+                                    message: "A bad response, Please try again.",
+                                });
+                            } else {
+                                if (responseGalleryUpdate.rowCount == 0 || responseGalleryUpdate.rowCount == null) {
+                                    reject({
+                                        done: false,
+                                        message: "Something went wrong with gallery, Please try again.",
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    resolve('Done');
                 })
+
+                promise.then((result) => {
+                    res.json({
+                        done: true,
+                        message: "Data updated successfully.",
+                    });
+                }).catch((error) => {
+                    res.json(error);
+                });
             } else {
                 res.json({
                     done: false,
@@ -647,13 +710,17 @@ const putVehicleStatus = async function (req, res, next) {
 
 const deleteVehicle = async function (req, res, next) {
     const userId = req.userVerify._id.user_id;
-    const vID = req.body.v_id;
+    const vID = req.params.v_id;
 
-    const response = await pool.query("DELETE FROM vehicles WHERE v_id=$1 AND v_owner_id=$2",
+    const responseWLocationsDelete = await pool.query("DELETE FROM vehicles_working_locations WHERE v_id=$1",
+        [vID]);
+    const responseGalleryDelete = await pool.query("DELETE FROM vehicles_image_gallery WHERE v_id=$1",
+        [vID]);
+    const responseVehicleDelete = await pool.query("DELETE FROM vehicles WHERE v_id=$1 AND v_owner_id=$2",
         [vID, userId]);
 
     try {
-        if (response.rowCount != 0 && response.rowCount != null) {
+        if (responseVehicleDelete.rowCount != 0 && responseVehicleDelete.rowCount != null) {
             if (res.status(200)) {
                 res.json({
                     done: true,
