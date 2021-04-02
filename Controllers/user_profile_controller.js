@@ -147,7 +147,40 @@ const getUsersProfileDetails = async function (req, res, next) {
         });
     }
 }
+const getUserTransactions = async function (req, res, next) {
+    const userId = req.userVerify._id.user_id;
+    const response = await pool.query("SELECT pay_amount, date_time FROM payments_transactions WHERE user_id=$1", [userId]);
+    try {
+        if (res.status(200)) {
+            if (response.rowCount != 0 && response.rowCount != null) {
+                res.json({
+                    done: true,
+                    message: "Done",
+                    data: response.rows,
+                })
+            } else {
+                res.json({
+                    done: false,
+                    message: "Data not found.",
+                    data: [],
+                })
+            }
 
+        } else {
+            res.json({
+                done: false,
+                message: "A bad response, Please try again.",
+                data: []
+            })
+        }
+    } catch (error) {
+        res.json({
+            done: false,
+            message: "Something went wrong, Please try again.",
+            data: [],
+        });
+    }
+}
 const putUserProfileDetails = async function (req, res, next) {
     const userId = req.userVerify._id.user_id;
     const user_name = req.body.user_name;
@@ -227,6 +260,7 @@ const deleteUserProfile = async function (req, res, next) {
 module.exports = {
     getUserProfileDetails,
     getUsersProfileDetails,
+    getUserTransactions,
     putUserProfileDetails,
     deleteUserProfile,
     getUserAccStatus
