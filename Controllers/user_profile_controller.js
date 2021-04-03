@@ -56,16 +56,7 @@ const getUserAccStatus = async function (req, res, next) {
                                 isExpire: false,
                                 accActive: true,
                                 isTrial: true,
-                                message: "Your account type is the trial, You can upgrade your account as master account.",
-                                data: [{
-                                    "user_name": response.rows[0]['user_name'],
-                                    "phone_no": response.rows[0]['phone_no'],
-                                    "reg_date": response.rows[0]['reg_date'],
-                                    "exp_date": response.rows[0]['exp_date'],
-                                    "update_date": response.rows[0]['update_date'],
-                                    "number_of_vehicles": response.rows[0]['number_of_vehicles'],
-                                    "user_type": response.rows[0]['user_type']
-                                }],
+                                message: "Your account type is a trial, You can upgrade your account as master account.",
                             })
                         } else {
                             res.json({
@@ -74,55 +65,26 @@ const getUserAccStatus = async function (req, res, next) {
                                 accActive: true,
                                 isTrial: false,
                                 message: "Your account type is the master account.",
-                                data: [{
-                                    "user_name": response.rows[0]['user_name'],
-                                    "phone_no": response.rows[0]['phone_no'],
-                                    "reg_date": response.rows[0]['reg_date'],
-                                    "exp_date": response.rows[0]['exp_date'],
-                                    "update_date": response.rows[0]['update_date'],
-                                    "number_of_vehicles": response.rows[0]['number_of_vehicles'],
-                                    "user_type": response.rows[0]['user_type']
-                                }],
                             })
                         }
-
                     } else {
-                        if (response.rows[0]['acc_type_trial'] == null) {
+                        if (response.rows[0]['acc_type_trial']) {
                             res.json({
                                 done: true,
                                 isExpire: false,
                                 accActive: false,
-                                isTrial: null,
-                                message: "Your account type is primary account, You can change your account type as trial or master.",
-                                data: [
-
-                                ],
+                                isTrial: true,
+                                message: "Your trial account is deactivated, You can upgrade your account as master account.",
                             })
                         } else {
-                            if (response.rows[0]['acc_type_trial']) {
-                                res.json({
-                                    done: true,
-                                    isExpire: false,
-                                    accActive: false,
-                                    isTrial: true,
-                                    message: "Your trial account is deactivated, You can upgrade your account as master account.",
-                                    data: [
-
-                                    ],
-                                })
-                            } else {
-                                //not active in this account, but payments are already done. we need to activate this account immediately.
-                                res.json({
-                                    done: true,
-                                    isExpire: false,
-                                    accActive: false,
-                                    isTrial: false,
-                                    message: "Your master account is deactivated, Please contact your apec lanka agent.",
-                                    data: [
-
-                                    ],
-                                })
-                            }
+                            //not active in this account, but payments are already done. we need to activate this account immediately.
+                            res.json({
+                                done: true,
+                                isExpire: false,
+                                accActive: false,
+                                isTrial: false,
+                                message: "Your master account is deactivated, Please contact your apec lanka agent.",
+                            })
                         }
                     }
                 } else {
@@ -132,14 +94,14 @@ const getUserAccStatus = async function (req, res, next) {
                         accActive: false,
                         isTrial: false,
                         message: "Your account is expired, You can upgrade your account as master account.",
-                        data: [],
+
                     })
                 }
             } else {
                 res.json({
                     done: false,
                     message: "User data not found.",
-                    data: [],
+
                 })
             }
 
@@ -147,14 +109,14 @@ const getUserAccStatus = async function (req, res, next) {
             res.json({
                 done: false,
                 message: "A bad response, Please try again.",
-                data: []
+
             })
         }
     } catch (error) {
         res.json({
             done: false,
             message: "Something went wrong, Please try again.",
-            data: [],
+
         });
     }
 }
@@ -265,6 +227,49 @@ const putUserProfileDetails = async function (req, res, next) {
         });
     }
 }
+
+const putAccountUpgradeDetails = async function (req, res, next) {
+    const userId = req.userVerify._id.user_id;
+    const expMothCount = req.body.exp_month;
+    const numberOfVehicles = req.body.number_of_vehicles;
+    //format date time
+    var date = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
+    var expDate = new Date();
+
+    try {
+        const response = await pool.query("SELECT * FROM users WHERE user_id=$1", [userId]);
+        if (res.status(200)) {
+            if (response.rowCount != 0 && response.rowCount != null) {
+
+                //set account expire date
+                expDate.setMonth(expDate.getMonth() + expMothCount);
+                expDate = dateFormat(expDate, "yyyy-mm-dd h:MM:ss");
+
+
+            } else {
+                res.json({
+                    done: false,
+                    message: "User data not found.",
+
+                })
+            }
+
+        } else {
+            res.json({
+                done: false,
+                message: "A bad response, Please try again.",
+
+            })
+        }
+    } catch (error) {
+        res.json({
+            done: false,
+            message: "Something went wrong, Please try again.",
+            data: [],
+        });
+    }
+
+}
 const deleteUserProfile = async function (req, res, next) {
     const userIdForDeletion = req.body.user_id;
     const userMobileNo = req.body.mobile_no;
@@ -307,6 +312,7 @@ module.exports = {
     getUsersProfileDetails,
     getUserTransactions,
     putUserProfileDetails,
+    putAccountUpgradeDetails,
     deleteUserProfile,
     getUserAccStatus
 }

@@ -198,11 +198,10 @@ const userAuth = async function (req, res, next) {
 }
 
 const userRegister = async function (req, res, next) {
+
     const userName = req.body.user_name;
-    const expMothCount = req.body.exp_month;
-    const numberOfVehicles = req.body.number_of_vehicles;
     const userType = req.body.user_type;
-    //the value is get from the verified token requeast 
+    ////// The value is get from the verified token requeast 
     const token_data = req.mobileToken;
     //format date time
     var date = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
@@ -210,10 +209,10 @@ const userRegister = async function (req, res, next) {
 
     try {
         //set account expire date
-        expDate.setMonth(expDate.getMonth() + expMothCount);
+        expDate.setMonth(expDate.getMonth() + 1);
         expDate = dateFormat(expDate, "yyyy-mm-dd h:MM:ss");
 
-        const responseReg = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date,exp_date, number_of_vehicles, user_type, update_date)VALUES($1,$2,$3,$4,$5,$6,$7,$8)", [uuidv4(), userName, token_data._mobile_no, date, expDate, numberOfVehicles, userType, date]);
+        const responseReg = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date,exp_date, number_of_vehicles, user_type, update_date)VALUES($1,$2,$3,$4,$5,$6,$7,$8)", [uuidv4(), userName, token_data._mobile_no, date, expDate, 1, userType, date]);
 
         if (res.status(200)) {
             if (responseReg.rowCount != 0 && responseReg.rowCount != null) {
