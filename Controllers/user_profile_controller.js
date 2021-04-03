@@ -48,7 +48,7 @@ const getUserAccStatus = async function (req, res, next) {
                 var dateTimeNow = dateFormat(new Date(), "yyyy-mm-dd h:MM:ss");
                 dateTimeNow = new Date(dateTimeNow);
 
-                if (dateTimeNow > getExpDate) {
+                if (dateTimeNow < getExpDate) {
                     if (response.rows[0]['acc_status_active']) {
                         if (response.rows[0]['acc_type_trial']) {
                             res.json({
@@ -135,8 +135,6 @@ const getUserAccStatus = async function (req, res, next) {
                         data: [],
                     })
                 }
-
-
             } else {
                 res.json({
                     done: false,
