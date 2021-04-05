@@ -4,7 +4,7 @@ const {
 } = require('uuid');
 
 const getVTypes =async function (req, res, next) {
-    const response = await pool.query('SELECT * FROM vehicles_type')
+    const response = await pool.query('SELECT * FROM vehicles_type ORDER BY v_type_name ASC')
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {

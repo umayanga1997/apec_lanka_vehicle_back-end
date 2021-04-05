@@ -6,7 +6,7 @@ const {
 } = require('uuid');
 
 const getlocations = async function (req, res, next) {
-    const response = await pool.query('SELECT * FROM locations')
+    const response = await pool.query('SELECT * FROM locations ORDER BY location_name ASC')
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
