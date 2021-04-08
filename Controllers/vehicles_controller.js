@@ -284,6 +284,95 @@ const getVehiclesByOwnerID = async function (req, res, next) {
         });
     }
 }
+
+const getVehiclesByOwnerQRID = async function (req, res, next) {
+    const vOwnerQRID = req.params.user_qr;
+    var vehicles = [];
+    const responseVehicles = await pool.query('SELECT v.*, NULL AS v_owner_id, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v LEFT OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id) WHERE u.user_type=$1 AND v.user_qr_id=$2', ["owner", vOwnerQRID]);
+    try {
+        if (res.status(200)) {
+            if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
+                let promise = new Promise(async (resolve, reject) => {
+                    for (var count in responseVehicles.rows) {
+                        var gallery = [];
+                        const vID = responseVehicles.rows[count]['v_id'];
+                        const responseGallery = await pool.query("SELECT * FROM vehicles_image_gallery WHERE v_id=$1", [vID]);
+                        if (res.status(200)) {
+                            if (responseGallery.rowCount != 0 && responseGallery.rowCount != null) {
+                                for (var countGallery in responseGallery.rows) {
+                                    gallery.push(responseGallery.rows[countGallery]);
+                                }
+                                responseVehicles.rows[count]["gallery"] = gallery;
+                                // vehicles.push(responseVehicles.rows[count]);
+                            } else {
+                                responseVehicles.rows[count]["gallery"] = gallery;
+                                // vehicles.push(responseVehicles.rows[count]);
+                            }
+
+                        } else {
+                            reject({
+                                done: false,
+                                message: "A bad response, Please try again.",
+                            });
+                        }
+                    }
+                    //Get locations from working location
+                    for (var count in responseVehicles.rows) {
+                        var location_name = "";
+                        const vID = responseVehicles.rows[count]['v_id'];
+                        var responseLocations = await pool.query("SELECT STRING_AGG(location_name, ', ') As location_name FROM locations WHERE location_id in (SELECT wl.location_id FROM vehicles_working_locations as wl WHERE wl.v_id=$1)", [vID]);
+
+                        if (res.status(200)) {
+                            if (responseLocations.rowCount != 0 && responseLocations.rowCount != null) {
+                                responseVehicles.rows[count]["location_name"] = responseLocations.rows[0]['location_name'];
+                                vehicles.push(responseVehicles.rows[count]);
+                            } else {
+                                responseVehicles.rows[count]["location_name"] = location_name;
+                                vehicles.push(responseVehicles.rows[count]);
+                            }
+                        } else {
+                            reject({
+                                done: false,
+                                message: "A bad response, Please try again.",
+                            });
+                        }
+                    }
+                    resolve("Done");
+                })
+                promise.then((result) => {
+                    res.send({
+                        done: true,
+                        message: "Data retrieval successfully.",
+                        data: vehicles,
+                    });
+                }).catch((error) => {
+                    res.json(error);
+                });
+            } else {
+                res.json({
+                    done: false,
+                    message: "Data not found.",
+                    data: [],
+                })
+            }
+
+        } else {
+            res.json({
+                done: false,
+                message: "A bad response, Please try again.",
+                data: []
+            })
+        }
+
+
+    } catch (error) {
+        res.json({
+            done: false,
+            message: "Something went wrong, Please try again.",
+            data: [],
+        });
+    }
+}
 const getVehiclesByOwnerSomeVehicleID = async function (req, res, next) {
     const vOwnerSomeVID = req.params.o_v_id;
     var vehicles = [];
@@ -750,6 +839,7 @@ module.exports = {
     getVehicles,
     getVehicleByID,
     getVehiclesByOwnerID,
+    getVehiclesByOwnerQRID,
     getVehiclesByTypeWithlocation,
     getVehiclesByOwnerSomeVehicleID,
     postVehicle,
