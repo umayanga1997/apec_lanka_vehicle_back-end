@@ -288,7 +288,7 @@ const getVehiclesByOwnerID = async function (req, res, next) {
 const getVehiclesByOwnerQRID = async function (req, res, next) {
     const vOwnerQRID = req.params.user_qr;
     var vehicles = [];
-    const responseVehicles = await pool.query('SELECT v.*, NULL AS v_owner_id, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v LEFT OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id) WHERE u.user_type=$1 AND v.user_qr_id=$2', ["owner", vOwnerQRID]);
+    const responseVehicles = await pool.query('SELECT v.*, NULL AS v_owner_id, u.user_name, u.phone_no, u.acc_status_active, vt.v_type_name FROM (vehicles AS v LEFT OUTER JOIN users AS u ON v.v_owner_id=u.user_id FULL OUTER JOIN vehicles_type AS vt ON v.v_type_id = vt.v_type_id) WHERE u.user_type=$1 AND u.user_qr_id=$2 AND u.acc_status_active=$3', ["owner", vOwnerQRID, true]);
     try {
         if (res.status(200)) {
             if (responseVehicles.rowCount != 0 && responseVehicles.rowCount != null) {
