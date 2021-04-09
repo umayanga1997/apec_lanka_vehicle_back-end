@@ -212,7 +212,7 @@ const userRegister = async function (req, res, next) {
         expDate.setMonth(expDate.getMonth() + 1);
         expDate = dateFormat(expDate, "yyyy-mm-dd h:MM:ss");
 
-        const responseReg = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date,exp_date, number_of_vehicles, user_type, update_date)VALUES($1,$2,$3,$4,$5,$6,$7,$8)", [uuidv4(), userName, token_data._mobile_no, date, expDate, 1, userType, date]);
+        const responseReg = await pool.query("INSERT INTO users(user_id, user_name, phone_no, reg_date,exp_date, number_of_vehicles, user_type, update_date, user_qr_id)VALUES($1,$2,$3,$4,$5,$6,$7,$8, $9)", [uuidv4(), userName, token_data._mobile_no, date, expDate, 1, userType, date, uuidv4()]);
 
         if (res.status(200)) {
             if (responseReg.rowCount != 0 && responseReg.rowCount != null) {
