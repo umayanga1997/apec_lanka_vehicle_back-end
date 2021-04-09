@@ -228,6 +228,7 @@ const userRegister = async function (req, res, next) {
                         message: "You have registered successfully..",
                         data: [{
                             "user_name": response.rows[0]['user_name'],
+                            "user_qr_id": response.rows[0]['user_qr_id'],
                             "phone_no": response.rows[0]['phone_no'],
                             "reg_date": response.rows[0]['reg_date'],
                             "exp_date": response.rows[0]['exp_date'],
@@ -280,6 +281,7 @@ const userLogin = async function (req, res, next) {
                 message: "You logged in successfully.",
                 data: [{
                     "user_name": response.rows[0]['user_name'],
+                    "user_qr_id": response.rows[0]['user_qr_id'],
                     "phone_no": response.rows[0]['phone_no'],
                     "reg_date": response.rows[0]['reg_date'],
                     "exp_date": response.rows[0]['exp_date'],

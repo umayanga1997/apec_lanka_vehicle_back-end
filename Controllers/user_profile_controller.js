@@ -5,7 +5,7 @@ var dateFormat = require("dateformat");
 
 const getUserProfileDetails = async function (req, res, next) {
     const userId = req.userVerify._id.user_id;
-    const response = await pool.query("SELECT user_name, phone_no,reg_date,user_type, exp_date, update_date, number_of_vehicles FROM users WHERE user_id=$1", [userId]);
+    const response = await pool.query("SELECT user_name, user_qr_id, phone_no,reg_date,user_type, exp_date, update_date, number_of_vehicles FROM users WHERE user_id=$1", [userId]);
     try {
         if (res.status(200)) {
             if (response.rowCount != 0 && response.rowCount != null) {
@@ -207,8 +207,8 @@ const putUserProfileDetails = async function (req, res, next) {
 
             } else {
                 res.json({
-                    done: true,
-                    message: "Account updated successfully.",
+                    done: false,
+                    message: "Account updated unsuccessfully.",
                     data: [],
                 })
             }
